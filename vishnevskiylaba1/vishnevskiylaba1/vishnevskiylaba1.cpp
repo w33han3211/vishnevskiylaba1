@@ -1,13 +1,10 @@
-﻿// vishnevskiylaba1.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
-//
-
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <fstream>
 
 using namespace std;
 
-struct pipe
+struct truba
 {
     string name;
     int lenght;
@@ -15,7 +12,7 @@ struct pipe
     bool repair;
 };
 
-struct CS
+struct kaes
 {
     string name;
     int countWS;
@@ -23,7 +20,7 @@ struct CS
     float eff;
 };
 
-void print_menu()
+void vivod_menu()
 {
     system("cls");
     cout << "1. Добавить трубу\n";
@@ -37,225 +34,324 @@ void print_menu()
     cout << "\nВыберите действие - ";
 }
 
-int get_variant(int count)
+int Get_Int(int b)
 {
-    int variant;
-    string s;
-    getline(cin, s);
-    while (sscanf(s.c_str(), "%d", &variant) != 1 || variant < 0 || variant > count)
-    {
-        cout << "Некорректный ввод. Попробуйте снова: ";
-        getline(cin, s);
+    int n;
+    cin >> n;
+    while ((cin.fail()) || (n < 0) || (n > b) || (cin.get() != '\n')) {
+        cin.clear();
+        cin.ignore(1000000, '\n');
+        cout << "Введите корректное число: ";
+        cin >> n;
     }
-    return variant;
+    return n;
 }
 
-pipe AddPipe()
+float Get_Float(float b)
 {
-    pipe Obj;
+    float n;
+    cin >> n;
+    while ((cin.fail()) || (n < 0) || (n > b) || (cin.get() != '\n')) {
+        cin.clear();
+        cin.ignore(1000000, '\n');
+        cout << "Введите корректное число: ";
+        cin >> n;
+    }
+    return n;
+}
+
+truba dobavittrubu()
+{
+    truba Obj;
     system("cls");
     cout << "Добавление трубы\n";
     cout << "Имя: ";
-    cin >> Obj.name;
-    cout << "Длинна (м): ";
-    cin >> Obj.lenght;
-    cout << "Диаметр (мм): ";
-    cin >> Obj.diametr;
-    cout << "Ремонт (0 или 1): ";
-    //int rep = get_variant(1);
-    //Obj.repair = rep;
-    cin >> Obj.repair;
+   
+    getline(cin, Obj.name);
+    cout << "Длинна (км): ";
+    
+    Obj.lenght = Get_Int(1000000);
+    while (Obj.lenght <= 0) {
+        cout << "Длинна должна быть больше 0!" << endl;
+        Obj.lenght = Get_Int(1000000);
+    }
+    cout << "Диаметр (см): ";
+   
+    Obj.diametr = Get_Int(1000000);
+    while (Obj.diametr <= 0) {
+        cout << "Диаметр должен быть больше 0!" << endl;
+        Obj.diametr = Get_Int(1000000);
+    }
+    cout << "Ремонт (0 - Нет или 1 - Да): ";
+   
+    Obj.repair = Get_Int(1);
     return Obj;
 }
 
-CS AddCS()
+kaes dobavitkaes()
 {
-    CS Obj;
+    kaes Obj;
     system("cls");
     cout << "Добавление КС\n";
     cout << "Имя: ";
-    cin >> Obj.name;
+  
+    getline(cin, Obj.name);
     cout << "Кол-во цехов: ";
-    cin >> Obj.countWS;
+    
+    Obj.countWS = Get_Int(1000000);
+    while (Obj.countWS <= 0) {
+        cout << "Кол-во цехов должно быть больше 0!" << endl;
+        Obj.countWS = Get_Int(1000000);
+    }
     cout << "Кол-во цехов в работе: ";
-    cin >> Obj.actWS;
-    cout << "Эффективность: ";
-    cin >> Obj.eff;
+   
+    Obj.actWS = Get_Int(1000000);
+    while (Obj.countWS < Obj.actWS) {
+        cout << "Количество цехов в работе должно быть меньше либо равно общему количеству цехов!" << endl;
+        Obj.actWS = Get_Int(1000000);
+    }
+    cout << "Эффективность (От 0 до 1): ";
+   
+    Obj.eff = Get_Float(1);
     return Obj;
 }
 
-void ShowPipe(const pipe& Obj)
+void pokaztruba(const truba& Obj)
 {
     cout << "Имя\t" << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
     cout << "================================================" << endl;
     cout << Obj.name << '\t' << Obj.lenght << '\t' << Obj.diametr << '\t' << Obj.repair << endl;
 }
 
-void ShowCS(const CS& Obj)
+void pokazkaes(const kaes& Obj)
 {
-    cout << "Имя\t" << "countWS\t" << "actWS\t" << "Эффективность\t" << endl;
+    cout << "Имя\t" << "Кол-во цехов\t" << "Кол-во цехов в работе\t" << "Эффективность\t" << endl;
     cout << "===========================================================================" << endl;
     cout << Obj.name << '\t' << Obj.countWS << '\t' << Obj.actWS << '\t' << Obj.eff << endl;
 }
 
-void EditPipe(pipe& Obj)
+void redaktruba(truba& Obj)
 {
     system("cls");
     cout << "Что редактируем?\n" << "1. Имя\n" << "2. Длинна\n" << "3. Диаметр\n" << "4. Ремонт\n" << "0. Выход\n" << ">";
-    int cursor = get_variant(4);
+    int cursor = Get_Int(4);
     switch (cursor) {
     case 1:
         cout << "Текущее имя: " << Obj.name << "\n";
         cout << "Новое имя: ";
-        cin >> Obj.name;
+   
+        getline(cin, Obj.name);
         break;
     case 2:
         cout << "Текущая длинна: " << Obj.lenght << "\n";
-        cout << "Новая длинна (м): ";
-        cin >> Obj.lenght;
+        cout << "Новая длинна (км): ";
+        
+        Obj.lenght = Get_Int(1000000);
+        while (Obj.lenght <= 0) {
+            cout << "Длинна должна быть больше 0!" << endl;
+            Obj.lenght = Get_Int(1000000);
+        }
         break;
     case 3:
         cout << "Текущий диаметр: " << Obj.diametr << "\n";
-        cout << "Новый диаметр (мм): ";
-        cin >> Obj.diametr;
+        cout << "Новый диаметр (см): ";
+       
+        Obj.diametr = Get_Int(1000000);
+        while (Obj.diametr <= 0) {
+            cout << "Диаметр должен быть больше 0!" << endl;
+            Obj.diametr = Get_Int(1000000);
+        }
         break;
     case 4:
         cout << "Текущий Ремонт: " << Obj.repair << "\n";
-        cout << "Ремонт (0 или 1): ";
-        //int rep = get_variant(1);
-        //Obj.repair = rep;
-        cin >> Obj.repair;
+        cout << "Ремонт (0 - Нет или 1 - Да): ";
+        
+        Obj.repair = Get_Int(1);
         break;
     case 0:
         break;
     }
 }
 
-void EditCS(CS& Obj)
+void redakkaes(kaes& Obj)
 {
     system("cls");
     cout << "Что редактируем?\n" << "1. Имя\n" << "2. Кол-во цехов\n" << "3. Кол-во цехов в работе\n" << "4. Эффективность\n" << "0. Выход\n" << ">";
-    int cursor = get_variant(4);
+    int cursor = Get_Int(4);
     switch (cursor) {
     case 1:
         cout << "Текущее имя: " << Obj.name << "\n";
         cout << "Новое имя: ";
-        cin >> Obj.name;
+        
+        getline(cin, Obj.name);
         break;
     case 2:
         cout << "Текущее кол-во цехов: " << Obj.countWS << "\n";
         cout << "Новое кол-во цехов: ";
-        cin >> Obj.countWS;
+       
+        Obj.countWS = Get_Int(1000000);
+        while (Obj.countWS <= 0) {
+            cout << "Кол-во цехов должно быть больше 0!" << endl;
+            Obj.countWS = Get_Int(1000000);
+        }
         break;
     case 3:
         cout << "Текущее кол-во цехов в работе: " << Obj.actWS << "\n";
         cout << "Новое кол-во цехов в работе: ";
-        cin >> Obj.actWS;
+        
+        Obj.actWS = Get_Int(1000000);
+        while (Obj.countWS < Obj.actWS) {
+            cout << "Количество цехов в работе должно быть меньше либо равно общему количеству цехов!" << endl;
+            Obj.actWS = Get_Int(1000000);
+        }
         break;
     case 4:
         cout << "Текущая эффективность: " << Obj.eff << "\n";
-        cout << "Новая эффективность: ";
-        cin >> Obj.eff;
+        cout << "Новая эффективность (От 0 до 1): ";
+        
+        Obj.eff = Get_Float(1);
         break;
     case 0:
         break;
     }
 }
 
-void Save(const pipe& Obj1, const CS& Obj2)
+void sahranit(const truba& Obj1, const kaes& Obj2)
 {
-    ofstream fout("C:\\Users\\iship\\OneDrive\\Документы\\GitHub\\CrossPlatform\\Shipov_Lab_1\\mas.txt");
-    fout << Obj1.name << " " << Obj1.lenght << " " << Obj1.diametr << " " << Obj1.repair << endl;
-    fout << Obj2.name << " " << Obj2.countWS << " " << Obj2.actWS << " " << Obj2.eff << endl;
+    ofstream fout("C:\\vishnevskiylaba1\\vishnevskiylaba1\\txt.txt");
+    fout << Obj1.name << "/" << Obj1.lenght << "/" << Obj1.diametr << "/" << Obj1.repair << endl;
+    fout << Obj2.name << "/" << Obj2.countWS << "/" << Obj2.actWS << "/" << Obj2.eff << endl;
     fout.close();
 }
 
-void Upload(pipe& Obj1, CS& Obj2)
+void zagruzit(truba& Obj1, kaes& Obj2)
 {
-    ifstream fin("C:\\Users\\iship\\OneDrive\\Документы\\GitHub\\CrossPlatform\\Shipov_Lab_1\\mas.txt");
+    ifstream fin("C:\\vishnevskiylaba1\\vishnevskiylaba1\\txt.txt");
     string buff;
-    if (!fin.is_open()) // если файл не открыт
-        cout << "Файл не может быть открыт!\n"; // сообщить об этом
+    if (!fin.is_open()) 
+        cout << "Файл не может быть открыт!\n"; 
     else
     {
-        fin >> Obj1.name;
-        fin >> Obj1.lenght;
-        fin >> Obj1.diametr;
-        fin >> Obj1.repair;
+        getline(fin, Obj1.name, '/');
+        getline(fin, buff, '/');
+        if (stoi(buff) <= 0) {
+            cout << "Файл не корректен 1!" << endl;
+            return;
+        }
+        else {
+            Obj1.lenght = stoi(buff);
+        }
+        getline(fin, buff, '/');
+        if (stoi(buff) <= 0) {
+            cout << "Файл не корректен 2!" << endl;
+            return;
+        }
+        else {
+            Obj1.diametr = stoi(buff);
+        }
+        getline(fin, buff);
+        if ((stoi(buff) < 0) || (stoi(buff) > 1)) {
+            cout << "Файл не корректен 3!" << endl;
+            return;
+        }
+        else {
+            Obj1.repair = stoi(buff);
+        }
 
-        fin >> Obj2.name;
-        fin >> Obj2.countWS;
-        fin >> Obj2.actWS;
-        fin >> Obj2.eff;
+        getline(fin, Obj2.name, '/');
+        getline(fin, buff, '/');
+        if (stoi(buff) <= 0) {
+            cout << "Файл не корректен 4!" << endl;
+            return;
+        }
+        else {
+            Obj2.countWS = stoi(buff);
+        }
+        getline(fin, buff, '/');
+        if (Obj2.countWS < stoi(buff)) {
+            cout << "Файл не корректен 5!" << endl;
+            return;
+        }
+        else {
+            Obj2.actWS = stoi(buff);
+        }
+        getline(fin, buff);
+        if ((stof(buff) < 0) || (stof(buff) > 1)) {
+            cout << "Файл не корректен 6!" << endl;
+            return;
+        }
+        else {
+            Obj2.eff = stof(buff);
+        }
 
-        fin.close(); // закрываем файл        
+        fin.close();   
+        return;
     }
 }
 
 int main()
 {
-    setlocale(LC_ALL, "Russian");
+    setlocale(LC_CTYPE, "Russian");
     int cursor;
 
-    pipe p = { "0", 0, 0, 0 };
-    CS CS = { "0", 0, 0, 0 };
+    truba p = { "0", 0, 0, 0 };
+    kaes CS = { "0", 0, 0, 0 };
 
     do
     {
-        print_menu();
-        cursor = get_variant(7);
+        vivod_menu();
+        cursor = Get_Int(7);
 
         switch (cursor) {
         case 1:
         {
-            //cout << "Действие: " << cursor << "\n";  
-            p = AddPipe();
+            
+            p = dobavittrubu();
             break;
         }
 
         case 2:
-        {
-            //cout << "Действие: " << cursor << "\n"; 
-            CS = AddCS();
+        { 
+            CS = dobavitkaes();
             break;
         }
 
         case 3:
         {
-            //cout << "Действие: " << cursor << "\n";   
+            
             system("cls");
             cout << "Просмотр всех объектов\n\n";
-            ShowPipe(p);
+            pokaztruba(p);
             cout << "\n";
-            ShowCS(CS);
+            pokazkaes(CS);
             break;
         }
 
         case 4:
         {
-            //cout << "Действие: " << cursor << "\n";            
-            EditPipe(p);
+                      
+            redaktruba(p);
             break;
         }
 
         case 5:
         {
-            //cout << "Действие: " << cursor << "\n";            
-            EditCS(CS);
+                        
+            redakkaes(CS);
             break;
         }
 
         case 6:
         {
-            //cout << "Действие: " << cursor << "\n";
-            Save(p, CS);
+            
+            sahranit(p, CS);
             break;
         }
 
         case 7:
         {
-            //cout << "Действие: " << cursor << "\n";
-            Upload(p, CS);
+            
+            zagruzit(p, CS);
             break;
         }
         }
@@ -263,13 +359,3 @@ int main()
     } while (cursor != 0);
     return 0;
 }
-// Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
-// Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
-
-// Советы по началу работы 
-//   1. В окне обозревателя решений можно добавлять файлы и управлять ими.
-//   2. В окне Team Explorer можно подключиться к системе управления версиями.
-//   3. В окне "Выходные данные" можно просматривать выходные данные сборки и другие сообщения.
-//   4. В окне "Список ошибок" можно просматривать ошибки.
-//   5. Последовательно выберите пункты меню "Проект" > "Добавить новый элемент", чтобы создать файлы кода, или "Проект" > "Добавить существующий элемент", чтобы добавить в проект существующие файлы кода.
-//   6. Чтобы снова открыть этот проект позже, выберите пункты меню "Файл" > "Открыть" > "Проект" и выберите SLN-файл.
