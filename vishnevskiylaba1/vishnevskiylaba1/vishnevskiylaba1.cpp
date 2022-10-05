@@ -5,9 +5,7 @@
 using namespace std;
 
 struct truba
-{
-    string name;
-    int lenght;
+{   int lenght;
     int diametr;
     bool repair;
 };
@@ -65,11 +63,7 @@ truba dobavittrubu()
     truba Obj;
     system("cls");
     cout << "Добавление трубы\n";
-    cout << "Имя: ";
-   
-    getline(cin, Obj.name);
-    cout << "Длинна (км): ";
-    
+    cout << "Длина (км): "; 
     Obj.lenght = Get_Int(1000000);
     while (Obj.lenght <= 0) {
         cout << "Длинна должна быть больше 0!" << endl;
@@ -118,9 +112,9 @@ kaes dobavitkaes()
 
 void pokaztruba(const truba& Obj)
 {
-    cout << "Имя\t" << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
+    cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
     cout << "================================================" << endl;
-    cout << Obj.name << '\t' << Obj.lenght << '\t' << Obj.diametr << '\t' << Obj.repair << endl;
+    cout  << Obj.lenght << '\t' << Obj.diametr << '\t' << Obj.repair << endl;
 }
 
 void pokazkaes(const kaes& Obj)
@@ -133,35 +127,9 @@ void pokazkaes(const kaes& Obj)
 void redaktruba(truba& Obj)
 {
     system("cls");
-    cout << "Что редактируем?\n" << "1. Имя\n" << "2. Длинна\n" << "3. Диаметр\n" << "4. Ремонт\n" << "0. Выход\n" << ">";
+    cout << "4. Ремонт\n" << "0. Выход\n" << ">";
     int cursor = Get_Int(4);
     switch (cursor) {
-    case 1:
-        cout << "Текущее имя: " << Obj.name << "\n";
-        cout << "Новое имя: ";
-   
-        getline(cin, Obj.name);
-        break;
-    case 2:
-        cout << "Текущая длинна: " << Obj.lenght << "\n";
-        cout << "Новая длинна (км): ";
-        
-        Obj.lenght = Get_Int(1000000);
-        while (Obj.lenght <= 0) {
-            cout << "Длинна должна быть больше 0!" << endl;
-            Obj.lenght = Get_Int(1000000);
-        }
-        break;
-    case 3:
-        cout << "Текущий диаметр: " << Obj.diametr << "\n";
-        cout << "Новый диаметр (см): ";
-       
-        Obj.diametr = Get_Int(1000000);
-        while (Obj.diametr <= 0) {
-            cout << "Диаметр должен быть больше 0!" << endl;
-            Obj.diametr = Get_Int(1000000);
-        }
-        break;
     case 4:
         cout << "Текущий Ремонт: " << Obj.repair << "\n";
         cout << "Ремонт (0 - Нет или 1 - Да): ";
@@ -176,25 +144,9 @@ void redaktruba(truba& Obj)
 void redakkaes(kaes& Obj)
 {
     system("cls");
-    cout << "Что редактируем?\n" << "1. Имя\n" << "2. Кол-во цехов\n" << "3. Кол-во цехов в работе\n" << "4. Эффективность\n" << "0. Выход\n" << ">";
+    cout << "3. Кол-во цехов в работе\n" << "0. Выход\n" << ">";
     int cursor = Get_Int(4);
     switch (cursor) {
-    case 1:
-        cout << "Текущее имя: " << Obj.name << "\n";
-        cout << "Новое имя: ";
-        
-        getline(cin, Obj.name);
-        break;
-    case 2:
-        cout << "Текущее кол-во цехов: " << Obj.countWS << "\n";
-        cout << "Новое кол-во цехов: ";
-       
-        Obj.countWS = Get_Int(1000000);
-        while (Obj.countWS <= 0) {
-            cout << "Кол-во цехов должно быть больше 0!" << endl;
-            Obj.countWS = Get_Int(1000000);
-        }
-        break;
     case 3:
         cout << "Текущее кол-во цехов в работе: " << Obj.actWS << "\n";
         cout << "Новое кол-во цехов в работе: ";
@@ -205,12 +157,6 @@ void redakkaes(kaes& Obj)
             Obj.actWS = Get_Int(1000000);
         }
         break;
-    case 4:
-        cout << "Текущая эффективность: " << Obj.eff << "\n";
-        cout << "Новая эффективность (От 0 до 1): ";
-        
-        Obj.eff = Get_Float(1);
-        break;
     case 0:
         break;
     }
@@ -219,8 +165,15 @@ void redakkaes(kaes& Obj)
 void sahranit(const truba& Obj1, const kaes& Obj2)
 {
     ofstream fout("C:\\vishnevskiylaba1\\vishnevskiylaba1\\txt.txt");
-    fout << Obj1.name << "/" << Obj1.lenght << "/" << Obj1.diametr << "/" << Obj1.repair << endl;
-    fout << Obj2.name << "/" << Obj2.countWS << "/" << Obj2.actWS << "/" << Obj2.eff << endl;
+    if (Obj1.diametr != 0)
+    {
+     fout << Obj1.lenght << " / " << Obj1.diametr << " / " << Obj1.repair << endl;
+    }
+    if (Obj1.diametr != 0) 
+    {
+     fout << Obj2.name << "/" << Obj2.countWS << "/" << Obj2.actWS << "/" << Obj2.eff << endl;
+    }
+    
     fout.close();
 }
 
@@ -232,7 +185,6 @@ void zagruzit(truba& Obj1, kaes& Obj2)
         cout << "Файл не может быть открыт!\n"; 
     else
     {
-        getline(fin, Obj1.name, '/');
         getline(fin, buff, '/');
         if (stoi(buff) <= 0) {
             cout << "Файл не корректен 1!" << endl;
@@ -294,7 +246,7 @@ int main()
     setlocale(LC_CTYPE, "Russian");
     int cursor;
 
-    truba p = { "0", 0, 0, 0 };
+    truba p = { 0, 0, 0 };
     kaes CS = { "0", 0, 0, 0 };
 
     do
