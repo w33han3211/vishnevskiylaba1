@@ -112,16 +112,22 @@ kaes dobavitkaes()
 
 void pokaztruba(const truba& Obj)
 {
-    cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
-    cout << "================================================" << endl;
-    cout  << Obj.lenght << '\t' << Obj.diametr << '\t' << Obj.repair << endl;
+    if (Obj.diametr != 0) {
+        cout << "Длинна\t" << "Диаметр\t" << "Ремонт\t" << endl;
+        cout << "================================================" << endl;
+        cout << Obj.lenght << '\t' << Obj.diametr << '\t' << Obj.repair << endl;
+
+    }
 }
 
 void pokazkaes(const kaes& Obj)
 {
-    cout << "Имя\t" << "Кол-во цехов\t" << "Кол-во цехов в работе\t" << "Эффективность\t" << endl;
-    cout << "===========================================================================" << endl;
-    cout << Obj.name << '\t' << Obj.countWS << '\t' << Obj.actWS << '\t' << Obj.eff << endl;
+    if (Obj.countWS != 0)
+    {
+        cout << "Имя\t" << "Кол-во цехов\t" << "Кол-во цехов в работе\t" << "Эффективность\t" << endl;
+        cout << "===========================================================================" << endl;
+        cout << Obj.name << '\t' << Obj.countWS << '\t' << Obj.actWS << '\t' << Obj.eff << endl;
+    }
 }
 
 void redaktruba(truba& Obj)
@@ -167,11 +173,11 @@ void sahranit(const truba& Obj1, const kaes& Obj2)
     ofstream fout("C:\\vishnevskiylaba1\\vishnevskiylaba1\\txt.txt");
     if (Obj1.diametr != 0)
     {
-     fout << Obj1.lenght << " / " << Obj1.diametr << " / " << Obj1.repair << endl;
+     fout << 0 << " / " << Obj1.lenght << " / " << Obj1.diametr << " / " << Obj1.repair << endl;
     }
-    if (Obj1.diametr != 0) 
+    if (Obj2.countWS != 0)
     {
-     fout << Obj2.name << "/" << Obj2.countWS << "/" << Obj2.actWS << "/" << Obj2.eff << endl;
+     fout << 1 << " / " << Obj2.name << "/" << Obj2.countWS << " / " << Obj2.actWS << " / " << Obj2.eff << endl;
     }
     
     fout.close();
@@ -185,60 +191,30 @@ void zagruzit(truba& Obj1, kaes& Obj2)
         cout << "Файл не может быть открыт!\n"; 
     else
     {
-        getline(fin, buff, '/');
-        if (stoi(buff) <= 0) {
-            cout << "Файл не корректен 1!" << endl;
-            return;
+        int i = 0;
+        int q;
+        while (i <= 1)
+            fin >> q;
+        if (q == 0)
+        {
+            fin >> ws;
+            fin >> Obj1.lenght;
+            fin >> Obj1.diametr;
+            fin >> Obj1.repair;
         }
-        else {
-            Obj1.lenght = stoi(buff);
+        else if (q == 1)
+        {
+            fin >> ws;
+            std::getline(fin, Obj2.name);
+            fin >> Obj2.countWS;
+            fin >> Obj2.actWS;
+            fin >> Obj2.eff;
         }
-        getline(fin, buff, '/');
-        if (stoi(buff) <= 0) {
-            cout << "Файл не корректен 2!" << endl;
-            return;
-        }
-        else {
-            Obj1.diametr = stoi(buff);
-        }
-        getline(fin, buff);
-        if ((stoi(buff) < 0) || (stoi(buff) > 1)) {
-            cout << "Файл не корректен 3!" << endl;
-            return;
-        }
-        else {
-            Obj1.repair = stoi(buff);
-        }
-
-        getline(fin, Obj2.name, '/');
-        getline(fin, buff, '/');
-        if (stoi(buff) <= 0) {
-            cout << "Файл не корректен 4!" << endl;
-            return;
-        }
-        else {
-            Obj2.countWS = stoi(buff);
-        }
-        getline(fin, buff, '/');
-        if (Obj2.countWS < stoi(buff)) {
-            cout << "Файл не корректен 5!" << endl;
-            return;
-        }
-        else {
-            Obj2.actWS = stoi(buff);
-        }
-        getline(fin, buff);
-        if ((stof(buff) < 0) || (stof(buff) > 1)) {
-            cout << "Файл не корректен 6!" << endl;
-            return;
-        }
-        else {
-            Obj2.eff = stof(buff);
-        }
-
+        i++;
+    }
         fin.close();   
         return;
-    }
+    
 }
 
 int main()
